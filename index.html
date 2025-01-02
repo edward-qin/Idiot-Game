@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idiot Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Start Menu -->
+  <div id="menu" class="screen">
+    <h1>Solo Player "Idiot"</h1>
+    <button id="startGameInit">Start Game</button>
+  </div>
+
+  <!-- Game Setup -->
+  <div id="settings" class="screen">
+    <h1>Player Setup</h1>
+    <div id="player-list"></div>
+    <button id="addCPUPlayer">Add CPU Player</button>
+
+    <button id="startGameSetupDone">Start Game</button>
+  </div>
+
+  <!-- Game Play -->
+  <div id="game" class="screen">
+    <div id="chatWindow"></div>
+    <input type="text" id="userInput" placeholder="Type a letter">
+    <button id="submitMove">Submit</button>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
