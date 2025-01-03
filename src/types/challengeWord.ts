@@ -1,0 +1,1 @@
+export type ChallengeWord = { word: string };
