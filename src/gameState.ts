@@ -1,6 +1,6 @@
-import { Player } from "./player/player";
-import { TurnActionAppend } from "./types/turnAction";
-import { Position } from "./types/turnAction";
+import { Player } from "./player/player.js";
+import { TurnActionAppend } from "./types/turnAction.js";
+import { Position } from "./types/turnAction.js";
 
 export class GameState {
   players: Player[] = [];

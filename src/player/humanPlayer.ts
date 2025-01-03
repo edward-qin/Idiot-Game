@@ -1,7 +1,7 @@
-import { Player } from "./player";
-import { TurnAction } from "../types/turnAction";
-import { ChallengeWord } from "../types/challengeWord";
-import { Position } from "../types/turnAction";
+import { Player } from "./player.js";
+import { TurnAction } from "../types/turnAction.js";
+import { ChallengeWord } from "../types/challengeWord.js";
+import { Position } from "../types/turnAction.js";
 
 export class HumanPlayer implements Player {
   name: string;

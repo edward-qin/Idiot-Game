@@ -1,5 +1,5 @@
-import { TurnAction } from "../types/turnAction";
-import { ChallengeWord } from "../types/challengeWord";
+import { TurnAction } from "../types/turnAction.js";
+import { ChallengeWord } from "../types/challengeWord.js";
 
 export interface Player {
   name: string;

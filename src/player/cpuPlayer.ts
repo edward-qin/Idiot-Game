@@ -1,8 +1,8 @@
-import { Player } from "./player";
-import { ChallengeWord } from "../types/challengeWord";
-import { Position, TurnAction } from "../types/turnAction";
-import { GameState } from "../gameState";
-import { Difficulty } from "../types/difficulty";
+import { Player } from "./player.js";
+import { ChallengeWord } from "../types/challengeWord.js";
+import { Position, TurnAction } from "../types/turnAction.js";
+import { GameState } from "../gameState.js";
+import { Difficulty } from "../types/difficulty.js";
 
 export class CPUPlayer implements Player {
   name: string;
