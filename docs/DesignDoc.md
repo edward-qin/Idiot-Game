@@ -100,12 +100,13 @@ On CPU Player Turn:
   Compute all words with the current substring as a substring 
   For each of 52 choices to add a letter:
     Compute all words with the candidate substring as a substring 
-    Begin computing a score
-      +inf if candidate substring is a word
-      +1 for each word that results in killing self
-        +10 instead if the candidate is a suffix/prefix of the word that kills self
-  Exponentially weight each score and select a candidate substring randomly
-    Weight using softmax on e^{-score}
+    Compute the sum of the probabilities of reaching each word that kills self
+      Assume every player follows the Easy strategy
+      Use Layered Traversal to compute the probability each player makes each of 52 moves
+        For each of the player's choices, compute the number of words that do not kill that player
+        Set the weight of the player's choices by the number associated
+      Sum the probabilities to compute the final probability for this choice
+  Choose a random choice of the 52 choices, weighted by the probabilities computed
   End Turn
 ```
 
