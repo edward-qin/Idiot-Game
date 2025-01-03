@@ -12,21 +12,32 @@ export class HumanPlayer implements Player {
   }
 
   async takeTurn(currentString: string): Promise<TurnAction> {
-    const userInput = await this.getUserInput(currentString, this.isValidAppend);
-    
-    let position;
-    let letter;
-    if (userInput.startsWith(currentString)) {
-      position = Position.END;
-      letter = userInput[userInput.length - 1];
-    } else if (userInput.endsWith(currentString)) {
-      position = Position.START;
-      letter = userInput[0];
+    const userInput = await this.getUserInput(
+      currentString,
+      this.isValidTurnAction
+    );
+
+    // Parse user input into TurnAction
+    if (this.isTurnActionAppend(userInput, currentString)) {
+      let position;
+      let letter;
+      if (userInput.startsWith(currentString)) {
+        position = Position.END;
+        letter = userInput[userInput.length - 1];
+      } else if (userInput.endsWith(currentString)) {
+        position = Position.START;
+        letter = userInput[0];
+      } else {
+        throw new Error(
+          "This state should never be reached: invalid user input"
+        );
+      }
+      return { position: position, letter: letter };
+    } else if (this.isTurnActionChallenge(userInput)) {
+      return "Challenge!";
     } else {
       throw new Error("This state should never be reached: invalid user input");
     }
-
-    return { position: position, letter: letter };
   }
 
   async respondToChallenge(currentString: string): Promise<ChallengeWord> {
@@ -48,10 +59,14 @@ export class HumanPlayer implements Player {
   ): Promise<string> {
     return new Promise<string>((resolve) => {
       const handleInput = () => {
+        // Get user input and parse
         const userInput = (
           document.getElementById("gameUserInput") as HTMLInputElement
-        ).value.trim().toLowerCase();
+        ).value
+          .trim()
+          .toLowerCase();
 
+        // Only accept user input if it meets specified condition
         if (isValid(userInput, currentString)) {
           resolve(userInput);
         } else {
@@ -64,20 +79,36 @@ export class HumanPlayer implements Player {
   }
 
   private addInputEventListeners(handleInput: () => void): void {
-    document.getElementById("gameSubmitMoveBtn")?.addEventListener("click", handleInput);
-    document.getElementById("gameUserInput")?.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        handleInput();
-      }
-    });
+    document
+      .getElementById("gameSubmitMoveBtn")
+      ?.addEventListener("click", handleInput);
+    document
+      .getElementById("gameUserInput")
+      ?.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          handleInput();
+        }
+      });
   }
 
-  private isValidAppend(input: string, currentString: string): boolean {
+  private isTurnActionAppend(input: string, currentString: string): boolean {
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
     return (
       input.length === currentString.length + 1 &&
-      ((input.startsWith(currentString) && alphabet.includes(input[input.length - 1])) ||
+      ((input.startsWith(currentString) &&
+        alphabet.includes(input[input.length - 1])) ||
         (currentString.endsWith(input) && alphabet.includes(input[0])))
+    );
+  }
+
+  private isTurnActionChallenge(input: string) {
+    return /^challenge!+$/.test(input);
+  }
+
+  private isValidTurnAction(input: string, currentString: string): boolean {
+    return (
+      this.isTurnActionAppend(input, currentString) ||
+      this.isTurnActionChallenge(input)
     );
   }
 

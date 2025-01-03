@@ -19,7 +19,7 @@ export class CPUPlayer implements Player {
   async takeTurn(currentString: string): Promise<TurnAction> {
     const possibleWords = this.getWordsContainingString(currentString);
     if (possibleWords.length === 0) {
-      return "Challenge";
+      return "Challenge!";
     }
 
     switch (this.difficulty) {
