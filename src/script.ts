@@ -18,6 +18,9 @@ function hideAllScreens() {
 }
 
 async function moveToSettings() {
+  const button = document.getElementById('menuStartGameBtn') as HTMLButtonElement;
+  button.disabled = true;
+
   const wordSet = await loadWordDataset();
   gameState = new GameState(wordSet);
   settingsOrchestrator = new SettingsOrchestrator();
