@@ -19,14 +19,18 @@ export class SettingsOrchestrator {
   private playerLock = new AsyncLock();
 
   setupStart(): void {
-    const instructionsBtn = document.getElementById('instructions-button') as HTMLButtonElement;
-    instructionsBtn.addEventListener('click', function() {
-      const instructionsText = document.getElementById('instructions-text') as HTMLDivElement;
-      instructionsText.classList.toggle('hidden');
-      if (instructionsText.classList.contains('hidden')) {
-        this.textContent = 'Show Instructions';
+    const instructionsBtn = document.getElementById(
+      "instructions-button"
+    ) as HTMLButtonElement;
+    instructionsBtn.addEventListener("click", function () {
+      const instructionsText = document.getElementById(
+        "instructions-text"
+      ) as HTMLDivElement;
+      instructionsText.classList.toggle("hidden");
+      if (instructionsText.classList.contains("hidden")) {
+        this.textContent = "Show Instructions";
       } else {
-        this.textContent = 'Hide Instructions';
+        this.textContent = "Hide Instructions";
       }
     });
     this.renderPlayers();
@@ -35,21 +39,21 @@ export class SettingsOrchestrator {
   async setupComplete(gameState: GameState): Promise<Player[]> {
     await this.playerLock.acquire();
     return this.players.map((player) => {
-      if (player.cpuNumber === null) {
-        return new HumanPlayer(player.name);
-      } else {
-        return new CPUPlayer(
-          player.name,
-          gameState,
-          player.difficulty as Difficulty
-        );
-      }
+      const playerObj =
+        player.cpuNumber === null
+          ? new HumanPlayer(player.name)
+          : new CPUPlayer(
+              player.name,
+              gameState,
+              player.difficulty as Difficulty
+            );
+      gameState.addPlayer(playerObj);
+      return playerObj;
     });
   }
 
   private async addCpuPlayer(): Promise<void> {
     await this.playerLock.acquire();
-    console.log("Enter add:", this.players, this.availableCpus);
     try {
       if (this.availableCpus.length === 0) {
         return;
@@ -71,7 +75,6 @@ export class SettingsOrchestrator {
 
   private async removePlayer(index: number): Promise<void> {
     await this.playerLock.acquire();
-    console.log("Enter remove:", this.players, this.availableCpus);
     try {
       if (this.players.length === 2) {
         return;
@@ -99,14 +102,16 @@ export class SettingsOrchestrator {
       if (i === this.availableCpus.length) {
         this.availableCpus.push(playerNum);
       }
-      console.log("In remove:", this.players, this.availableCpus);
       this.renderPlayers();
     } finally {
       this.playerLock.release();
     }
   }
 
-  private async moveRow(index: number, direction: "up" | "down"): Promise<void> {
+  private async moveRow(
+    index: number,
+    direction: "up" | "down"
+  ): Promise<void> {
     await this.playerLock.acquire();
     try {
       const newPlayers = [...this.players];
@@ -125,7 +130,7 @@ export class SettingsOrchestrator {
     } finally {
       this.playerLock.release();
     }
-  };
+  }
 
   private disablePlayerButtons() {
     const addButton = document.getElementById(
@@ -179,7 +184,9 @@ export class SettingsOrchestrator {
       const moveDownButton = document.createElement("button");
       moveDownButton.className = "move-down";
       moveDownButton.textContent = "↓";
-      moveDownButton.addEventListener("click", () => this.moveRow(index, "down"));
+      moveDownButton.addEventListener("click", () =>
+        this.moveRow(index, "down")
+      );
       if (index === this.players.length - 1) {
         moveDownButton.disabled = true;
       }
@@ -227,7 +234,7 @@ export class SettingsOrchestrator {
       } else {
         // Placeholder for styling for Human Player
         const removePlaceholder = document.createElement("span");
-        playerDiv.appendChild(removePlaceholder); 
+        playerDiv.appendChild(removePlaceholder);
       }
 
       playerListDiv.appendChild(playerDiv);

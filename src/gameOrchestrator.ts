@@ -17,6 +17,7 @@ export class GameOrchestrator {
   }
 
   private async startRound() {
+    console.log("started round", this.state);
     this.runTurn();
   }
 
