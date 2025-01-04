@@ -6,13 +6,13 @@ import { GameState } from "./gameState.js";
 
 interface PlayerInfo {
   name: string;
-  difficulty: Difficulty | null;
+  difficulty?: Difficulty; // Only CPU players will have this property
   cpuNumber?: number; // Only CPU players will have this property
 }
 
 export class SettingsOrchestrator {
   private players: PlayerInfo[] = [
-    { name: "You", difficulty: null },
+    { name: "You" },
     { name: "CPU 1", cpuNumber: 1, difficulty: Difficulty.EASY },
   ];
   private availableCpus: number[] = [2, 3, 4, 5];
@@ -40,7 +40,7 @@ export class SettingsOrchestrator {
     await this.playerLock.acquire();
     return this.players.map((player) => {
       const playerObj =
-        player.cpuNumber === null
+        player.cpuNumber === undefined
           ? new HumanPlayer(player.name)
           : new CPUPlayer(
               player.name,
