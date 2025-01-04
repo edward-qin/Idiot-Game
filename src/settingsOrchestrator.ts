@@ -19,12 +19,6 @@ export class SettingsOrchestrator {
   private playerLock = new AsyncLock();
 
   setupStart(): void {
-    const addCpuPlayerBtn = document.getElementById(
-      "settingsAddCpuPlayerBtn"
-    ) as HTMLButtonElement;
-
-    addCpuPlayerBtn.addEventListener("click", () => this.addCpuPlayer());
-
     this.renderPlayers();
   }
 
@@ -45,7 +39,7 @@ export class SettingsOrchestrator {
 
   private async addCpuPlayer(): Promise<void> {
     await this.playerLock.acquire();
-    console.log("Enter add:", this.players, this.availableCpus)
+    console.log("Enter add:", this.players, this.availableCpus);
     try {
       if (this.availableCpus.length === 0) {
         return;
@@ -67,7 +61,7 @@ export class SettingsOrchestrator {
 
   private async removePlayer(index: number): Promise<void> {
     await this.playerLock.acquire();
-    console.log("Enter remove:", this.players, this.availableCpus)
+    console.log("Enter remove:", this.players, this.availableCpus);
     try {
       if (this.players.length === 2) {
         return;
@@ -95,7 +89,7 @@ export class SettingsOrchestrator {
       if (i === this.availableCpus.length) {
         this.availableCpus.push(playerNum);
       }
-      console.log("In remove:", this.players, this.availableCpus)
+      console.log("In remove:", this.players, this.availableCpus);
       this.renderPlayers();
     } finally {
       this.playerLock.release();
@@ -104,7 +98,7 @@ export class SettingsOrchestrator {
 
   private disableAddRemovePlayerButtons() {
     const addButton = document.getElementById(
-      "settingsAddCpuPlayerBtn"
+      "add-player"
     ) as HTMLButtonElement;
     addButton.disabled = true;
 
@@ -129,6 +123,7 @@ export class SettingsOrchestrator {
 
       const nameSpan = document.createElement("span");
       nameSpan.innerText = player.name;
+      nameSpan.className = "player-name";
       playerDiv.appendChild(nameSpan);
 
       // Add difficulty dropdown for CPU players
@@ -141,6 +136,7 @@ export class SettingsOrchestrator {
           if (player.difficulty === difficulty) option.selected = true;
           difficultySelect.appendChild(option);
         });
+        difficultySelect.className = "difficulty";
 
         difficultySelect.addEventListener("change", (e: Event) => {
           const target = e.target as HTMLSelectElement;
@@ -153,6 +149,7 @@ export class SettingsOrchestrator {
       if (player.cpuNumber !== undefined) {
         const removeButton = document.createElement("button");
         removeButton.innerText = "Remove";
+        removeButton.className = "remove-player";
 
         if (this.players.length >= 3) {
           removeButton.addEventListener("click", () => {
@@ -168,13 +165,16 @@ export class SettingsOrchestrator {
       playerListDiv.appendChild(playerDiv);
     });
 
-    // Allow adding more CPUs
-    if (this.players.length < 6) {
-      const button = document.getElementById(
-        "settingsAddCpuPlayerBtn"
-      ) as HTMLButtonElement;
-      button.disabled = false;
-    }
+    // Render Add Player Button
+    const addPlayerRow = document.createElement("div");
+    addPlayerRow.className = "add-player-row";
+    const addPlayerButton = document.createElement("button");
+    addPlayerButton.id = "add-player";
+    addPlayerButton.textContent = "+ Add CPU Player";
+    addPlayerButton.addEventListener("click", () => this.addCpuPlayer());
+    addPlayerButton.disabled = this.players.length === 6;
+    addPlayerRow.appendChild(addPlayerButton);
+    playerListDiv.appendChild(addPlayerRow);
   }
 }
 
@@ -202,4 +202,3 @@ class AsyncLock {
     }
   }
 }
-
