@@ -29,10 +29,10 @@ body {
   width: 100%;
   max-width: 600px;
   margin-left: auto;
-  margin-right: auto; 
+  margin-right: auto;
 }
 
-#instructions-button, 
+#instructions-button,
 #settingsStartGameBtn {
   padding: 10px 20px;
   font-size: 16px;
@@ -69,7 +69,7 @@ body {
 
 .player .player-name {
   flex-grow: 1;
-  padding-left: 10px; 
+  padding-left: 10px;
 }
 
 .player button {
