@@ -19,6 +19,16 @@ export class SettingsOrchestrator {
   private playerLock = new AsyncLock();
 
   setupStart(): void {
+    const instructionsBtn = document.getElementById('instructions-button') as HTMLButtonElement;
+    instructionsBtn.addEventListener('click', function() {
+      const instructionsText = document.getElementById('instructions-text') as HTMLDivElement;
+      instructionsText.classList.toggle('hidden');
+      if (instructionsText.classList.contains('hidden')) {
+        this.textContent = 'Show Instructions';
+      } else {
+        this.textContent = 'Hide Instructions';
+      }
+    });
     this.renderPlayers();
   }
 
@@ -44,7 +54,7 @@ export class SettingsOrchestrator {
       if (this.availableCpus.length === 0) {
         return;
       }
-      this.disableAddRemovePlayerButtons();
+      this.disablePlayerButtons();
 
       const cpuNumber = this.availableCpus.shift();
       const newPlayer = {
@@ -66,7 +76,7 @@ export class SettingsOrchestrator {
       if (this.players.length === 2) {
         return;
       }
-      this.disableAddRemovePlayerButtons();
+      this.disablePlayerButtons();
 
       const removedPlayer = this.players[index];
       if (removedPlayer.cpuNumber === undefined) {
@@ -96,7 +106,28 @@ export class SettingsOrchestrator {
     }
   }
 
-  private disableAddRemovePlayerButtons() {
+  private async moveRow(index: number, direction: "up" | "down"): Promise<void> {
+    await this.playerLock.acquire();
+    try {
+      const newPlayers = [...this.players];
+      const currentPlayer = newPlayers[index];
+
+      if (direction === "up" && index > 0) {
+        newPlayers[index] = newPlayers[index - 1];
+        newPlayers[index - 1] = currentPlayer;
+      } else if (direction === "down" && index < newPlayers.length - 1) {
+        newPlayers[index] = newPlayers[index + 1];
+        newPlayers[index + 1] = currentPlayer;
+      }
+      this.players = [...newPlayers];
+
+      this.renderPlayers();
+    } finally {
+      this.playerLock.release();
+    }
+  };
+
+  private disablePlayerButtons() {
     const addButton = document.getElementById(
       "add-player"
     ) as HTMLButtonElement;
@@ -106,6 +137,20 @@ export class SettingsOrchestrator {
       ".removePlayerButton"
     ) as NodeListOf<HTMLButtonElement>;
     removeButtons.forEach((button) => {
+      button.disabled = true;
+    });
+
+    const moveUpButtons = document.querySelectorAll(
+      ".move-up"
+    ) as NodeListOf<HTMLButtonElement>;
+    moveUpButtons.forEach((button) => {
+      button.disabled = true;
+    });
+
+    const moveDownButtons = document.querySelectorAll(
+      ".move-down"
+    ) as NodeListOf<HTMLButtonElement>;
+    moveDownButtons.forEach((button) => {
       button.disabled = true;
     });
   }
@@ -120,6 +165,25 @@ export class SettingsOrchestrator {
     this.players.forEach((player, index) => {
       const playerDiv = document.createElement("div");
       playerDiv.classList.add("player");
+
+      // Add options to rearrange the players
+      const moveUpButton = document.createElement("button");
+      moveUpButton.className = "move-up";
+      moveUpButton.textContent = "↑";
+      moveUpButton.addEventListener("click", () => this.moveRow(index, "up"));
+      if (index === 0) {
+        moveUpButton.disabled = true;
+      }
+      playerDiv.appendChild(moveUpButton);
+
+      const moveDownButton = document.createElement("button");
+      moveDownButton.className = "move-down";
+      moveDownButton.textContent = "↓";
+      moveDownButton.addEventListener("click", () => this.moveRow(index, "down"));
+      if (index === this.players.length - 1) {
+        moveDownButton.disabled = true;
+      }
+      playerDiv.appendChild(moveDownButton);
 
       const nameSpan = document.createElement("span");
       nameSpan.innerText = player.name;
@@ -160,6 +224,10 @@ export class SettingsOrchestrator {
           removeButton.disabled = true;
         }
         playerDiv.appendChild(removeButton);
+      } else {
+        // Placeholder for styling for Human Player
+        const removePlaceholder = document.createElement("span");
+        playerDiv.appendChild(removePlaceholder); 
       }
 
       playerListDiv.appendChild(playerDiv);

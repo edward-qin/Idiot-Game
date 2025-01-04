@@ -12,12 +12,47 @@ body {
   display: block;
 }
 
+#instructions-text.hidden {
+  display: none;
+}
+
+#settingsText,
+#instructions-text {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto; 
+}
+
+#instructions-button, 
+#settingsStartGameBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#instructions-button:hover {
+  background-color: #218838;
+}
+
 #settingsPlayerList {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   margin-bottom: 20px;
 }
@@ -30,6 +65,26 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
+}
+
+.player .player-name {
+  flex-grow: 1;
+  padding-left: 10px; 
+}
+
+.player button {
+  margin-left: 8px;
+}
+
+.player .move-up,
+.player .move-down {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.player button.remove-player {
+  margin-left: auto;
 }
 
 .player:nth-child(even) {
@@ -49,21 +104,21 @@ body {
 .difficulty,
 .remove-player,
 #add-player {
-  flex: 1;
   margin-left: 10px;
+  margin-right: 10px;
 }
 
 button {
   padding: 5px 10px;
   border: none;
   border-radius: 3px;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
 button:disabled {
