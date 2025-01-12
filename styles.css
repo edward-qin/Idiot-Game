@@ -12,12 +12,14 @@ body {
   display: block;
 }
 
+#gameInstructionsText.hidden,
 #instructions-text.hidden {
   display: none;
 }
 
 #settingsText,
-#instructions-text {
+#instructions-text,
+#gameInstructionsText {
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 15px;
@@ -33,6 +35,7 @@ body {
 }
 
 #instructions-button,
+#gameInstructionsButton,
 #settingsStartGameBtn {
   padding: 10px 20px;
   font-size: 16px;
@@ -43,7 +46,8 @@ body {
   cursor: pointer;
 }
 
-#instructions-button:hover {
+#instructions-button:hover,
+#gameInstructionsButton:hover {
   background-color: #218838;
 }
 
@@ -106,6 +110,32 @@ body {
 #add-player {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+#gameChatWindow {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.playerMessage {
+  margin: 5px 0;
+  text-align: left; /* Left-align player messages */
+}
+
+.systemPlayerMessage {
+  margin: 5px 0;
+  text-align: left;
+  font-style: italic;
+}
+
+.systemRoundMessage {
+  text-align: center;
+}
+
+.gamePlayerAction {
+  padding-bottom: 10px;
 }
 
 button {

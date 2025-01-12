@@ -14,7 +14,7 @@ export class HumanPlayer implements Player {
   async takeTurn(currentString: string): Promise<TurnAction> {
     const userInput = await this.getUserInput(
       currentString,
-      this.isValidTurnAction
+      (input, currentString) => this.isValidTurnAction(input, currentString)
     );
 
     // Parse user input into TurnAction

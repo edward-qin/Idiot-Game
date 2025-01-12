@@ -61,8 +61,44 @@
     <div id="gameScreen" class="screen">
       <h1>IDIOT</h1>
       <div id="gameChatWindow"></div>
-      <input type="text" id="gameUserInput" placeholder="Type here..." />
-      <button id="gameSubmitMoveBtn">Enter</button>
+      <div id="gamePlayerAction">
+        <div id="gamePlayerPrompt"></div>
+        <input type="text" id="gameUserInput" placeholder="Type here..." />
+        <button id="gameSubmitMoveBtn">Enter</button>
+        <button id="gameChallengeBtn">CHALLENGE</button>
+      </div>
+      <div id="gameInstructionsText" class="hidden">
+        <p>
+          IDIOT is a word game. Players take turns adding one letter at a time
+          to the start or end of the current string. The goal of the game is to
+          not add the final letter that would form a word. The final word must
+          be at least 4 letters long. If a player completes a word, the player
+          loses the round.
+        </p>
+        <p>
+          Additionally, if any <code>player A</code> believes that no word
+          contains the current string as a substring, they can "challenge" the
+          previous <code>player B</code>. When "challenged",
+          <code>player B</code> must come up with a word that contains the
+          current string as a substring.
+        </p>
+        <ul>
+          <li>
+            If no such word can be created, then <code>player B</code> loses the
+            round
+          </li>
+          <li>
+            If a word can be created, then current <code>player A</code> loses
+            the round
+          </li>
+        </ul>
+        <p>
+          When a player loses the round, they gain a letter in "IDIOT". That
+          player starts the next round. Once a player gains all 5 letters, they
+          lose the game.
+        </p>
+      </div>
+      <button id="gameInstructionsButton">Show Instructions</button>
     </div>
 
     <script type="module" src="dist/script.js"></script>

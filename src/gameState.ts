@@ -7,6 +7,7 @@ export class GameState {
   currentString: string = "";
   currentPlayerIndex: number = 0;
   wordSet: Set<string>;
+  roundNum: number = 0;
 
   constructor(wordSet: Set<string>) {
     this.wordSet = wordSet;
@@ -43,5 +44,13 @@ export class GameState {
 
   getWordSet(): Set<string> {
     return this.wordSet;
+  }
+
+  advanceRound(): void {
+    this.roundNum++;
+  }
+
+  getRoundNumber(): number {
+    return this.roundNum;
   }
 }
