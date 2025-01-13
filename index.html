@@ -60,13 +60,10 @@
     <!-- Game Play -->
     <div id="gameScreen" class="screen">
       <h1>IDIOT</h1>
-      <div id="gameChatWindow"></div>
-      <div id="gamePlayerAction">
-        <div id="gamePlayerPrompt"></div>
-        <input type="text" id="gameUserInput" placeholder="Type here..." />
-        <button id="gameSubmitMoveBtn">Enter</button>
-        <button id="gameChallengeBtn">CHALLENGE</button>
-      </div>
+      <button id="gameInstructionsButton">Show Instructions</button>
+      <a href="https://raw.githubusercontent.com/edward-qin/Idiot-Game/refs/heads/main/words/words_filtered.txt" target="_blank">
+        <button id="wordBankBtn">Word Bank</button>
+      </a>
       <div id="gameInstructionsText" class="hidden">
         <p>
           IDIOT is a word game. Players take turns adding one letter at a time
@@ -98,7 +95,13 @@
           lose the game.
         </p>
       </div>
-      <button id="gameInstructionsButton">Show Instructions</button>
+      <div id="gameChatWindow"></div>
+      <div id="gamePlayerAction">
+        <input type="text" id="gameUserInput" placeholder="Start with a letter..." />
+        <button id="gameSubmitMoveBtn" disabled="true">Enter</button>
+        <button id="gameChallengeBtn" disabled="true">CHALLENGE!</button>
+        <div id="gamePlayerPrompt"></div>
+      </div>
     </div>
 
     <script type="module" src="dist/script.js"></script>

@@ -12,10 +12,16 @@ export class HumanPlayer implements Player {
   }
 
   async takeTurn(currentString: string): Promise<TurnAction> {
+    if (currentString.length === 0) {
+      this.updatePlayerHint("Your turn! Add a letter to start.");
+    } else {
+      this.updatePlayerHint("Your turn! Add a letter to the start or end.");
+    }
     const userInput = await this.getUserInput(
       currentString,
       (input, currentString) => this.isValidTurnAction(input, currentString)
     );
+    this.updatePlayerHint();
 
     // Parse user input into TurnAction
     if (this.isTurnActionAppend(userInput, currentString)) {
@@ -41,7 +47,13 @@ export class HumanPlayer implements Player {
   }
 
   async respondToChallenge(currentString: string): Promise<ChallengeWord> {
-    const userInput = await this.getUserInput(currentString, this.isValidWord);
+    this.updatePlayerHint(
+      "You got challenged! Provide a word containing the previous string."
+    );
+    const userInput = await this.getUserInput(
+      currentString,
+      this.isValidWord);
+    this.updatePlayerHint();
     return { word: userInput };
   }
 
@@ -55,7 +67,7 @@ export class HumanPlayer implements Player {
 
   private async getUserInput(
     currentString: string,
-    isValid: (input: string, currentString: string) => boolean
+    isValid: (input: string, currentString: string) => string
   ): Promise<string> {
     return new Promise<string>((resolve) => {
       const handleInput = () => {
@@ -67,28 +79,117 @@ export class HumanPlayer implements Player {
           .toLowerCase();
 
         // Only accept user input if it meets specified condition
-        if (isValid(userInput, currentString)) {
+        const error = isValid(userInput, currentString)
+        if (error === "") {
+          this.closeDOMForInput();
+          this.removeInputEventListeners(
+            handleInput,
+            handleInputEnter,
+            handleChallenge
+          );
           resolve(userInput);
         } else {
-          alert("Invalid input! Please try again.");
+          this.updatePlayerHint(error);
         }
       };
 
-      this.addInputEventListeners(handleInput);
+      const handleInputEnter = (event: KeyboardEvent) => {
+        if (event.key === "Enter") {
+          handleInput();
+        }
+      };
+
+      const handleChallenge = () => {
+        if (currentString.length !== 0) {
+          this.closeDOMForInput();
+          this.removeInputEventListeners(
+            handleInput,
+            handleInputEnter,
+            handleChallenge
+          );
+          resolve("challenge!");
+        }
+      };
+
+      // Update DOM
+      this.setDOMForInput(currentString);
+      this.addInputEventListeners(
+        handleInput,
+        handleInputEnter,
+        handleChallenge
+      );
     });
   }
 
-  private addInputEventListeners(handleInput: () => void): void {
+  private updatePlayerHint(msg: string = "") {
+    const playerHint = document.getElementById(
+      "gamePlayerPrompt"
+    ) as HTMLDivElement;
+    playerHint.textContent = msg;
+  }
+
+  private setDOMForInput(currentString: string) {
+    const inputText = document.getElementById(
+      "gameUserInput"
+    ) as HTMLInputElement;
+    inputText.value = currentString;
+    inputText.disabled = false;
+    const enterBtn = document.getElementById(
+      "gameSubmitMoveBtn"
+    ) as HTMLButtonElement;
+    enterBtn.disabled = false;
+    const challengeBtn = document.getElementById(
+      "gameChallengeBtn"
+    ) as HTMLButtonElement;
+    challengeBtn.disabled = currentString.length === 0;
+  }
+
+  private closeDOMForInput() {
+    const inputText = document.getElementById(
+      "gameUserInput"
+    ) as HTMLInputElement;
+    inputText.value = "";
+    inputText.disabled = true;
+    const enterBtn = document.getElementById(
+      "gameSubmitMoveBtn"
+    ) as HTMLButtonElement;
+    enterBtn.disabled = true;
+    const challengeBtn = document.getElementById(
+      "gameChallengeBtn"
+    ) as HTMLButtonElement;
+    challengeBtn.disabled = true;
+  }
+
+  private addInputEventListeners(
+    handleInput: () => void,
+    handleInputEnter: (event: KeyboardEvent) => void,
+    handleChallenge: () => void
+  ): void {
     document
       .getElementById("gameSubmitMoveBtn")
       ?.addEventListener("click", handleInput);
     document
       .getElementById("gameUserInput")
-      ?.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          handleInput();
-        }
-      });
+      ?.addEventListener("keydown", handleInputEnter);
+    document
+      .getElementById("gameChallengeBtn")
+      ?.addEventListener("click", handleChallenge);
+  }
+
+  private removeInputEventListeners(
+    handleInput: () => void,
+    handleInputEnter: (event: KeyboardEvent) => void,
+    handleChallenge: () => void
+  ): void {
+    document
+      .getElementById("gameSubmitMoveBtn")
+      ?.removeEventListener("click", handleInput);
+    document
+      .getElementById("gameUserInput")
+      ?.removeEventListener("keydown", handleInputEnter);
+    document
+      .getElementById("gameChallengeBtn")
+      ?.removeEventListener("click", handleChallenge);
   }
 
   private isTurnActionAppend(input: string, currentString: string): boolean {
@@ -97,7 +198,7 @@ export class HumanPlayer implements Player {
       input.length === currentString.length + 1 &&
       ((input.startsWith(currentString) &&
         alphabet.includes(input[input.length - 1])) ||
-        (currentString.endsWith(input) && alphabet.includes(input[0])))
+        (input.endsWith(currentString) && alphabet.includes(input[0])))
     );
   }
 
@@ -105,14 +206,35 @@ export class HumanPlayer implements Player {
     return /^challenge!+$/.test(input);
   }
 
-  private isValidTurnAction(input: string, currentString: string): boolean {
-    return (
-      this.isTurnActionAppend(input, currentString) ||
-      this.isTurnActionChallenge(input)
-    );
+  /**
+   * Verifies input is valid turn action
+   * @param input string from user
+   * @param currentString from previous turn
+   * @returns string indicating error (or empty string if no error)
+   */
+  private isValidTurnAction(input: string, currentString: string): string {
+    const isAppend = this.isTurnActionAppend(input, currentString);
+    const isChallenge = this.isTurnActionChallenge(input);
+    if (isAppend || isChallenge) {
+      return "";
+    } else if (currentString.length == 0) {
+      return "Invalid input: Type only a single letter to start!";
+    } else {
+      return "Invalid input: Make sure the input contains the previous string with exactly 1 letter added!"
+    }
   }
 
-  private isValidWord(input: string, currentString: string): boolean {
-    return /^[a-z]+$/.test(input) && input.length > currentString.length;
+  /**
+   * Verifies input is valid word
+   * @param input string from user
+   * @param currentString from previous turn
+   * @returns string indicating error (or empty string if no error)
+   */
+  private isValidWord(input: string, currentString: string): string {
+    if (/^[a-z]+$/.test(input) && input.length > currentString.length) {
+      return "";
+    } else {
+      return "Invalid input: Make sure the word contains the current string!"
+    }
   }
 }

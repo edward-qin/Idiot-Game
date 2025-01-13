@@ -1,5 +1,6 @@
 import { GameState } from "./gameState.js";
 import { Player } from "./player/player.js";
+import { ChallengeWord } from "./types/challengeWord.js";
 import {
   TurnAction,
   TurnActionAppend,
@@ -80,15 +81,19 @@ export class GameOrchestrator {
     this.addPlayerTurn(this.state.getCurrentPlayer(), "Challenge!");
 
     // Move back to previous player
+    await this.sleep(1000);
     this.state.moveToPreviousPlayer();
     const challengeWord = await this.state
       .getCurrentPlayer()
       .respondToChallenge(this.state.currentString);
 
+    this.addPlayerChallengeResponse(this.state.getCurrentPlayer(), challengeWord);
+
     // The challenge was met and bypassed: The challenger gains a letter
     if (this.state.wordSet.has(challengeWord.word)) {
       this.state.moveToNextPlayer();
     }
+    await this.sleep(500);
     this.addSystemPlayerLoss(this.state.getCurrentPlayer());
     this.endRound();
   }
@@ -126,6 +131,15 @@ export class GameOrchestrator {
     } else {
       messageDiv.innerHTML = `<strong>${player.name}: </strong> CHALLENGE!`;
     }
+    this.updateChatWindow(messageDiv);
+  }
+
+  private addPlayerChallengeResponse(player: Player, challengeWord: ChallengeWord): void {
+    console.log(this.state.getCurrentPlayer(), this.state.currentString);
+
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("playerMessage");
+    messageDiv.innerHTML = `<strong>${player.name}: </strong> ${challengeWord.word}`;
     this.updateChatWindow(messageDiv);
   }
 

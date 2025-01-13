@@ -36,7 +36,8 @@ body {
 
 #instructions-button,
 #gameInstructionsButton,
-#settingsStartGameBtn {
+#settingsStartGameBtn,
+#wordBankBtn {
   padding: 10px 20px;
   font-size: 16px;
   background-color: #28a745;
@@ -47,8 +48,14 @@ body {
 }
 
 #instructions-button:hover,
-#gameInstructionsButton:hover {
+#gameInstructionsButton:hover,
+#settingsStartGameBtn:hover,
+#wordBankBtn:hover {
   background-color: #218838;
+}
+
+#wordBankBtn {
+  outline: none;
 }
 
 #settingsPlayerList {
@@ -114,9 +121,20 @@ body {
 
 #gameChatWindow {
   flex-grow: 1;
+  height: 500px;
   padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   overflow-y: auto;
+  border: 2px solid #bbb;
   background-color: #f9f9f9;
+  box-sizing: border-box;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
 }
 
 .playerMessage {
@@ -136,6 +154,16 @@ body {
 
 .gamePlayerAction {
   padding-bottom: 10px;
+}
+
+#gamePlayerPrompt {
+  color: red;
+  text-align: center;
+  font-style: italic;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 button {
