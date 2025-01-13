@@ -1,5 +1,5 @@
 from __future__ import annotations
-from setup.filter import get_dataset
+from filter import get_dataset
 import json
 
 class TrieNode:

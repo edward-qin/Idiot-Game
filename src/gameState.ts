@@ -1,0 +1,56 @@
+import { Player } from "./player/player.js";
+import { TurnActionAppend } from "./types/turnAction.js";
+import { Position } from "./types/turnAction.js";
+
+export class GameState {
+  players: Player[] = [];
+  currentString: string = "";
+  currentPlayerIndex: number = 0;
+  wordSet: Set<string>;
+  roundNum: number = 0;
+
+  constructor(wordSet: Set<string>) {
+    this.wordSet = wordSet;
+  }
+
+  addPlayer(player: Player) {
+    this.players.push(player);
+  }
+
+  getCurrentPlayer(): Player {
+    return this.players[this.currentPlayerIndex];
+  }
+
+  getNumPlayers(): number {
+    return this.players.length;
+  }
+
+  moveToNextPlayer(): void {
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.players.length;
+  }
+
+  moveToPreviousPlayer(): void {
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + this.players.length - 1) % this.players.length;
+  }
+
+  updateString(action: TurnActionAppend): void {
+    this.currentString =
+      action.position === Position.START
+        ? action.letter + this.currentString
+        : this.currentString + action.letter;
+  }
+
+  getWordSet(): Set<string> {
+    return this.wordSet;
+  }
+
+  advanceRound(): void {
+    this.roundNum++;
+  }
+
+  getRoundNumber(): number {
+    return this.roundNum;
+  }
+}
